@@ -77,19 +77,19 @@ def create_llm_service():
     
     if not api_key:
         raise ValueError(
-            "❌ GOOGLE_API_KEY not found in environment variables.\n"
+            " GOOGLE_API_KEY not found in environment variables.\n"
             "   Please set it in .env file or as an environment variable.\n"
             "   Get your free key at: https://aistudio.google.com/apikey"
         )
     
-    logger.info("🤖 Initializing Google Gemini LLM Service...")
+    logger.info(" Initializing Google Gemini LLM Service...")
     
     llm = GeminiLlmService(
         api_key=api_key,
         model="gemini-2.5-flash"
     )
     
-    logger.info("✓ Gemini LLM Service initialized")
+    logger.info(" Gemini LLM Service initialized")
     return llm
 
 
@@ -109,15 +109,15 @@ def create_sql_runner(db_path: str = "clinic.db"):
     """
     if not os.path.exists(db_path):
         raise FileNotFoundError(
-            f"❌ Database file '{db_path}' not found.\n"
+            f" Database file '{db_path}' not found.\n"
             f"   Please run: python setup_database.py"
         )
     
-    logger.info(f"🗄️  Initializing SQLite Runner with database: {db_path}")
+    logger.info(f"  Initializing SQLite Runner with database: {db_path}")
     
     sql_runner = SqliteRunner(database_path=db_path)
     
-    logger.info("✓ SQLite Runner initialized")
+    logger.info(" SQLite Runner initialized")
     return sql_runner
 
 
@@ -129,11 +129,11 @@ def create_agent_memory():
     Returns:
         DemoAgentMemory instance
     """
-    logger.info("🧠 Initializing Agent Memory...")
+    logger.info(" Initializing Agent Memory...")
     
     memory = DemoAgentMemory()
     
-    logger.info("✓ Agent Memory initialized")
+    logger.info(" Agent Memory initialized")
     return memory
 
 
@@ -155,23 +155,23 @@ def create_tool_registry(sql_runner, agent_memory):
     Returns:
         ToolRegistry with tools ready for Agent
     """
-    logger.info("🔧 Creating Tool Registry with all 4 tools...")
+    logger.info(" Creating Tool Registry with all 4 tools...")
     
     tool_registry = ToolRegistry()
     
     # Tool 1: RunSqlTool - Executes SQL queries
-    logger.info("  • RunSqlTool - Executes SQL queries on database")
+    logger.info("  RunSqlTool - Executes SQL queries on database")
     run_sql_tool = RunSqlTool(sql_runner=sql_runner)
     
     # Tool 2: VisualizeDataTool - Creates visualizations
-    logger.info("  • VisualizeDataTool - Creates visualizations of results")
+    logger.info("   VisualizeDataTool - Creates visualizations of results")
     visualize_data_tool = VisualizeDataTool()
     
     # Tool 3 & 4: Memory tools (imported but auto-managed by Agent)
-    logger.info("  • SaveQuestionToolArgsTool - Saves Q&A pairs (auto-registered)")
-    logger.info("  • SearchSavedCorrectToolUsesTool - Searches Q&A pairs (auto-registered)")
+    logger.info("   SaveQuestionToolArgsTool - Saves Q&A pairs (auto-registered)")
+    logger.info("  SearchSavedCorrectToolUsesTool - Searches Q&A pairs (auto-registered)")
     
-    logger.info("✓ Tool Registry ready with 4 tools")
+    logger.info(" Tool Registry ready with 4 tools")
     
     return tool_registry
 
@@ -184,11 +184,11 @@ def create_user_resolver():
     Returns:
         DefaultUserResolver instance (identifies all users as default)
     """
-    logger.info("👤 Initializing User Resolver...")
+    logger.info(" Initializing User Resolver...")
     
     user_resolver = DefaultUserResolver()
     
-    logger.info("✓ User Resolver initialized")
+    logger.info(" User Resolver initialized")
     return user_resolver
 
 
@@ -198,11 +198,11 @@ def initialize_agent(db_path: str = "clinic.db") -> Agent:
     Initialize and return the complete Vanna 2.0 Agent
     
     This function sets up all required components per Step 4:
-    1. ✅ LLM Service (GeminiLlmService)
-    2. ✅ ToolRegistry with 4 tools (RunSqlTool, VisualizeDataTool, SaveQuestionToolArgsTool, SearchSavedCorrectToolUsesTool)
-    3. ✅ DemoAgentMemory instance (Vanna 2.0's learning system)
-    4. ✅ UserResolver (simple default resolver) - MUST be ASYNC
-    5. ✅ Agent with all components connected
+    1.  LLM Service (GeminiLlmService)
+    2.  ToolRegistry with 4 tools (RunSqlTool, VisualizeDataTool, SaveQuestionToolArgsTool, SearchSavedCorrectToolUsesTool)
+    3.  DemoAgentMemory instance (Vanna 2.0's learning system)
+    4.  UserResolver (simple default resolver) - MUST be ASYNC
+    5.  Agent with all components connected
     
     Args:
         db_path: Path to SQLite database file
@@ -215,7 +215,7 @@ def initialize_agent(db_path: str = "clinic.db") -> Agent:
         FileNotFoundError: If database file doesn't exist
     """
     logger.info("=" * 60)
-    logger.info("🚀 Initializing Vanna 2.0 Agent (Step 4)")
+    logger.info(" Initializing Vanna 2.0 Agent (Step 4)")
     logger.info("=" * 60)
     
     try:
@@ -235,7 +235,7 @@ def initialize_agent(db_path: str = "clinic.db") -> Agent:
         user_resolver = create_user_resolver()
         
         # Step 6: Create Agent with all components connected
-        logger.info("🔨 Creating Agent with all components connected...")
+        logger.info("Creating Agent with all components connected...")
         
         agent = Agent(
             llm_service=llm_service,
@@ -244,22 +244,22 @@ def initialize_agent(db_path: str = "clinic.db") -> Agent:
             agent_memory=agent_memory
         )
         
-        logger.info("✓ Agent created successfully")
+        logger.info(" Agent created successfully")
         
         logger.info("=" * 60)
-        logger.info("✅ Step 4 Complete: Vanna 2.0 Agent initialized!")
+        logger.info(" Step 4 Complete: Vanna 2.0 Agent initialized!")
         logger.info("   Components:")
-        logger.info("   ✓ LLM Service: GeminiLlmService")
-        logger.info("   ✓ Tool Registry: 4 tools (RunSqlTool, VisualizeDataTool,")
+        logger.info("    LLM Service: GeminiLlmService")
+        logger.info("    Tool Registry: 4 tools (RunSqlTool, VisualizeDataTool,")
         logger.info("     SaveQuestionToolArgsTool, SearchSavedCorrectToolUsesTool)")
-        logger.info("   ✓ Agent Memory: DemoAgentMemory")
-        logger.info("   ✓ User Resolver: DefaultUserResolver (ASYNC)")
+        logger.info("   Agent Memory: DemoAgentMemory")
+        logger.info("    User Resolver: DefaultUserResolver (ASYNC)")
         logger.info("=" * 60)
         
         return agent
     
     except Exception as e:
-        logger.error(f"❌ Failed to initialize agent: {e}", exc_info=True)
+        logger.error(f" Failed to initialize agent: {e}", exc_info=True)
         raise
 
 
@@ -301,11 +301,11 @@ if __name__ == "__main__":
     """
     try:
         agent = initialize_agent()
-        print(f"\n✅ Agent initialized successfully!")
+        print(f"\n Agent initialized successfully!")
         print(f"Agent instance: {agent}")
         print(f"Agent type: {type(agent)}")
         
     except Exception as e:
-        print(f"\n❌ Error: {e}")
+        print(f"\n Error: {e}")
         import traceback
         traceback.print_exc()
